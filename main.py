@@ -64,19 +64,18 @@ def dftPrime(arr, n):
     # find smallest primitive
     g = smallestPrimitive(n)
     
-    # make an array of g^i
+    # make an array of g^(-i)
     g_arr = np.zeros(n, dtype=int) 
     for i in range(0, n):
-        g_arr[i] = modulo(g, i, n)
+        g_arr[i] = modulo(g, n-i-1, n)
     
-    # make the second product (change comment)
+    # make the second product
     fft2 = []
     f = np.exp(-2j*np.pi*(1/n))
     for i in g_arr:
         fft2.append(f*i)
 
     # make the first product   
-    #TO DO: change indices for - 1
     fft1 = np.zeros(n, dtype=int)
     fft1 = arr[g_arr]
     
@@ -94,5 +93,5 @@ def dftPrime(arr, n):
 
 # test
 arr = np.array([3, 2, 1, -3, 0, 4, 6])
-dftPrime(arr, 7)
-
+A = dftPrime(arr, 7)
+print(A)

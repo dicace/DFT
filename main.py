@@ -4,6 +4,7 @@
 import numpy as np
 from numpy import fft
 
+# check if number is Prime
 def isPrime(n):
     if n > 1:
         for i in range(2, n // 2):
@@ -12,7 +13,8 @@ def isPrime(n):
         return True
     else:
         return False
-    
+
+# find prime factors of a number
 def primeFactors(factors, n):
     i = 2
     while i * i <= n:
@@ -25,8 +27,8 @@ def primeFactors(factors, n):
         factors.append(n)
     return factors
 
-
-def modulo(x, y, z):
+# calculate  x^y%z
+def powerModulo(x, y, z):
     result = 1
     x = x % z
     while y > 0:
@@ -37,6 +39,7 @@ def modulo(x, y, z):
         x = (x * x) % z
     return result
 
+# find smallest primitive root of a number
 def smallestPrimitive(n):
     factors = []
     
@@ -50,7 +53,7 @@ def smallestPrimitive(n):
     for i in range(2, phi + 1):
         flag = False
         for j in factors:
-            if (modulo(i, phi // j, n) == 1):
+            if (powerModulo(i, phi // j, n) == 1):
                 flag = True
                 break
         if flag == False:
@@ -58,40 +61,60 @@ def smallestPrimitive(n):
     
     return -1
 
-
+# compute the DFT
 def dftPrime(arr, n):
 
     # find smallest primitive
     g = smallestPrimitive(n)
     
-    # make an array of g^(-i)
-    g_arr = np.zeros(n, dtype=int) 
+    # make an array of g^i
+    g_i = np.zeros(n, dtype=int) 
     for i in range(0, n):
-        g_arr[i] = modulo(g, n-i-1, n)
+        g_i[i] = powerModulo(g, i, n)
     
-    # make the second product
+    
+    # make an array of g^(-i)
+    g_minus_i = np.zeros(n, dtype=int) 
+    for i in range(0, n):
+        g_minus_i[i] = powerModulo(g, n-i-1, n)
+    
+    # make the first product ffft   
+    fft1 = np.zeros(n, dtype=int)
+    fft1 = arr[g_minus_i]
+    
+    # make the second product for ifft
     fft2 = []
     f = np.exp(-2j*np.pi*(1/n))
-    for i in g_arr:
+    for i in g_i:
         fft2.append(f*i)
 
-    # make the first product   
-    fft1 = np.zeros(n, dtype=int)
-    fft1 = arr[g_arr]
-    
+   
     # initialize the result
     A = np.zeros(n, dtype=complex)
     A[0] = np.sum(arr)
     
-    # do the fft
+    # compute the ifft
     inv_dft_arr = fft.ifft(fft.fft(fft1)*fft.fft(fft2))
     
     # populate the result
     for k in range(1, n):
-        A[modulo(g, k, n)] = arr[0] + inv_dft_arr[k] 
+        A[powerModulo(g, k, n)] = arr[0] + inv_dft_arr[k] 
     return A
+
 
 # test
 arr = np.array([3, 2, 1, -3, 0, 4, 6])
 A = dftPrime(arr, 7)
 print(A)
+print()
+
+arr = np.array([3, 2, 1, -3, 0])
+A = dftPrime(arr, 5)
+print(A)
+print()
+
+arr = np.array([3, 2, 1, -3, 0, 4, 6, 13, -2, 0, 4])
+A = dftPrime(arr, 11)
+print(A)
+
+

@@ -1,6 +1,3 @@
-
-# coding: utf-8
-
 import numpy as np
 from numpy import fft
 
@@ -69,26 +66,23 @@ def dftPrime(arr, n):
     
     # make an array of g^i
     g_i = np.zeros(n, dtype=int) 
-    for i in range(0, n):
-        g_i[i] = powerModulo(g, i, n)
-    
+    for i in range(0, n-1):
+        g_i[i] = powerModulo(g, i+1, n)
     
     # make an array of g^(-i)
     g_minus_i = np.zeros(n, dtype=int) 
-    for i in range(0, n):
-        g_minus_i[i] = powerModulo(g, n-i-1, n)
+    for i in range(0, n-1):
+        g_minus_i[i] = powerModulo(g, n-i-2, n)
     
-    # make the first product ffft   
-    fft1 = np.zeros(n, dtype=int)
+    # make the first product for ifft   
     fft1 = arr[g_minus_i]
-    
+ 
     # make the second product for ifft
     fft2 = []
     f = np.exp(-2j*np.pi*(1/n))
     for i in g_i:
         fft2.append(f*i)
 
-   
     # initialize the result
     A = np.zeros(n, dtype=complex)
     A[0] = np.sum(arr)
@@ -98,7 +92,7 @@ def dftPrime(arr, n):
     
     # populate the result
     for k in range(1, n):
-        A[powerModulo(g, k, n)] = arr[0] + inv_dft_arr[k] 
+        A[powerModulo(g, k, n)] = arr[0] + inv_dft_arr[k-1] 
     return A
 
 
@@ -116,5 +110,3 @@ print()
 arr = np.array([3, 2, 1, -3, 0, 4, 6, 13, -2, 0, 4])
 A = dftPrime(arr, 11)
 print(A)
-
-

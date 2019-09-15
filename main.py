@@ -58,6 +58,7 @@ def smallestPrimitive(n):
     
     return -1
 
+
 # compute the DFT
 def dftPrime(arr, n):
 
@@ -65,12 +66,13 @@ def dftPrime(arr, n):
     g = smallestPrimitive(n)
     
     # make an array of g^i
-    g_i = np.zeros(n, dtype=int) 
+    g_i = np.zeros(n-1, dtype=int) 
     for i in range(0, n-1):
         g_i[i] = powerModulo(g, i+1, n)
     
+
     # make an array of g^(-i)
-    g_minus_i = np.zeros(n, dtype=int) 
+    g_minus_i = np.zeros(n-1, dtype=int) 
     for i in range(0, n-1):
         g_minus_i[i] = powerModulo(g, n-i-2, n)
     
@@ -79,9 +81,8 @@ def dftPrime(arr, n):
  
     # make the second product for ifft
     fft2 = []
-    f = np.exp(-2j*np.pi*(1/n))
     for i in g_i:
-        fft2.append(f*i)
+        fft2.append(np.exp(-2j*np.pi*(1/n)*i))
 
     # initialize the result
     A = np.zeros(n, dtype=complex)
@@ -89,24 +90,30 @@ def dftPrime(arr, n):
     
     # compute the ifft
     inv_dft_arr = fft.ifft(fft.fft(fft1)*fft.fft(fft2))
-    
+
     # populate the result
     for k in range(1, n):
-        A[powerModulo(g, k, n)] = arr[0] + inv_dft_arr[k-1] 
+        A[powerModulo(g, k+1, n)] = arr[0] + inv_dft_arr[k-1] 
     return A
 
 
+
 # test
+
 arr = np.array([3, 2, 1, -3, 0, 4, 6])
 A = dftPrime(arr, 7)
 print(A)
+print(fft.fft(arr))
 print()
 
 arr = np.array([3, 2, 1, -3, 0])
 A = dftPrime(arr, 5)
 print(A)
+print(fft.fft(arr))
 print()
 
 arr = np.array([3, 2, 1, -3, 0, 4, 6, 13, -2, 0, 4])
 A = dftPrime(arr, 11)
 print(A)
+print(fft.fft(arr))
+

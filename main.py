@@ -228,7 +228,7 @@ plt.show()
 # make an array of prime numbers for testing computation time difference
 # between numpy fft and dftPrime and display it on graph
 
-prime_array = np.array([7, 181, 563, 721, 10007, 10081, 19997, 24989, 34981, 49999, 99991])
+prime_array = np.array([7, 181, 563, 10007, 19997, 24989, 34981, 49999, 99991])
 prime_dft, dft = calculateTimeDiff(prime_array)
 print("Computation time for Rader's DFT: ", prime_dft)
 print("Computation time for DFT: ", dft)
@@ -242,7 +242,7 @@ plt.show()
 
 # now use array of prime numbers with the restriction that N-1 is not highly composite
 
-prime_array = np.array([7, 563, 10007, 19997, 24989, 34981, 49999])
+prime_array = np.array([7, 563, 19997, 24989, 34981, 49999])
 prime_dft, dft = calculateTimeDiff(prime_array)
 print("Computation time for Rader's DFT: ", prime_dft)
 print("Computation time for DFT: ", dft)
@@ -256,7 +256,7 @@ plt.show()
 
 # try with the restriction that N-1 must be highly composite number
 
-prime_array = np.array([7, 181, 721, 10081, 20161, 45361])
+prime_array = np.array([7, 181, 2521, 20161, 45361])
 prime_dft, dft = calculateTimeDiff(prime_array)
 print("Computation time for Rader's DFT: ", prime_dft)
 print("Computation time for DFT: ", dft)
